@@ -40,3 +40,7 @@ class Hangman(object):
 
     def runGame(self):
         pass
+
+if __name__ == "__main__":
+    hangman = Hangman()
+    hangman.runGame()
