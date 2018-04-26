@@ -1,12 +1,10 @@
-var = raw_input("Please enter a word: ")
-print "you entered", var
-
-word_list = ['animal', 'intelligent', 'uniform'] # whatever list of words, add things later, proccess seperately
 
 class Hangman(object):
 
     def __init__(self, filename):
         self.MAX_GUESSES = 6
+        self.word_list = ['animal', 'intelligent',
+                     'uniform']  # whatever list of words, add things later, proccess seperately
         self.this_word = ''
         self.guesses_left = self.MAX_GUESSES
         self.letters_guessed = set()
@@ -39,6 +37,8 @@ class Hangman(object):
         pass
 
     def runGame(self):
+        var = raw_input("Please enter a word: ")
+        print "you entered", var
         pass
 
 if __name__ == "__main__":
