@@ -24,7 +24,8 @@ class Hangman(object):
     def updateWordString(self):
         pass
 
-    def updateCounters(self):
+    def updateCounters(self, input):
+        # self.words_guessed
         pass
 
     def updateDisplay(self):
@@ -36,10 +37,17 @@ class Hangman(object):
     def updateHangmanDisplay(self):
         pass
 
+    def isaWord(self,input):
+        return len(input) > 1
+
+    def isaLetter(self,input):
+        return len(input) == 1
+
     def runGame(self):
-        var = raw_input("Please enter a word: ")
-        print "you entered", var
-        pass
+        while self.guesses_left > 0:
+            var = raw_input("Please enter a word or a letter: ")
+            
+
 
 if __name__ == "__main__":
     hangman = Hangman()
