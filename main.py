@@ -67,7 +67,7 @@ wins_computer = 0
 message_str = '\nGood luck! Starting the game'
 gameIsDone = False
 
-print('you can quit by typing \'quit\'')
+print('You can always quit by typing \'quit\'')
 
 while True:
     display_status(guessing_string, num_wrong_guesses, guesses_left, wrong_letters,
