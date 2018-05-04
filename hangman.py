@@ -3,7 +3,7 @@ import random
 from sys import exit
 import hangman_pics
 
-CONST_MAX_GUESSES = 5
+CONST_MAX_GUESSES = 6
 
 
 def get_word():
@@ -125,10 +125,10 @@ def initiate_game(word_ind=None):
     return secret_word, guessing_string, message_str
 
 
-def run_game():
+def run_game(word=None):
     #  This is the main body of the game
 
-    secret_word, guessing_string, message_str = initiate_game()
+    secret_word, guessing_string, message_str = initiate_game(word)
 
     num_wrong_guesses = 0
     correct_guesses = ''
@@ -164,75 +164,6 @@ def run_game():
                 wrong_letters = ''
             else:
                 exit(0)
-
-#
-# def run_game():
-#
-#     #  This is the main body of the game
-#
-#     secret_word = get_word()
-#     print(secret_word)  # disable this in the final product
-#     guessing_string = ['_']*len(secret_word)
-#     num_wrong_guesses = 0
-#     correct_guesses = ''
-#     max_guesses = 5
-#     guesses_left = max_guesses
-#     wrong_letters = ''
-#     wins_player = 0
-#     wins_computer = 0
-#     message_str = '\nGood luck! Starting the game'
-#     game_is_done = False
-#
-#     print('\nYou can always quit by typing \'quit\'')
-#
-#     while True:
-#         display_status(guessing_string, num_wrong_guesses, guesses_left, wrong_letters,
-#                        wins_player, wins_computer, message_str)
-#         guess = get_guess(wrong_letters + correct_guesses)
-#         if guess in secret_word:
-#             correct_guesses = correct_guesses + guess
-#             for i in range(len(guessing_string)):
-#                 if guess == secret_word[i]:
-#                     guessing_string[i] = guess
-#             found_all_letters = True
-#             for i in range(len(secret_word)):
-#                 if secret_word[i] not in correct_guesses:
-#                     found_all_letters = False
-#                     message_str = '\nKeep going!'
-#                     break
-#             if found_all_letters:
-#                 wins_player += 1
-#                 message_str = '\nCorrect!\nThe word is "' + secret_word + '"!\n'
-#                 display_status(guessing_string, num_wrong_guesses, guesses_left, wrong_letters,
-#                                wins_player, wins_computer, message_str)
-#                 game_is_done = True
-#
-#         else:
-#             wrong_letters = wrong_letters + guess
-#             num_wrong_guesses += 1
-#             guesses_left -= 1
-#             message_str = '\nWrong guess!'
-#             if num_wrong_guesses == max_guesses:
-#                 wins_computer += 1
-#                 message_str = '\nYou lost!\nThe correct word is "' + secret_word + '"!\n'
-#                 display_status(guessing_string, num_wrong_guesses, guesses_left, wrong_letters,
-#                                wins_player, wins_computer, message_str)
-#                 game_is_done = True
-#
-#         if game_is_done:
-#             if play_again():
-#                 secret_word = get_word()
-#                 print(secret_word)
-#                 guessing_string = ['_'] * len(secret_word)
-#                 num_wrong_guesses = 0
-#                 correct_guesses = ''
-#                 max_guesses = 5
-#                 guesses_left = max_guesses
-#                 wrong_letters = ''
-#                 message_str = '\nGood luck! Starting the game'
-#                 game_is_done = False
-#             else:
-#                 exit(0)
 
 
 if __name__ == '__main__':

@@ -50,53 +50,56 @@ class TestMain(unittest.TestCase):
     def test_display_status(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        hangman.display_status(['d','e','_','_','_'], 0, 0, ['a'], 0, 0, '\nKeep going!')
-        print(captured_output.getvalue())
-        hangman.display_status(['d', 'e', '_', '_', '_'], 5, 0, ['a','f','q','x','l'], 0, 1, '\nYou lost!')
+        hangman.display_status(['d', 'e', '_', '_', '_'], hangman.CONST_MAX_GUESSES,
+                               0, ['a', 'f', 'q', 'x', 'l'], 0, 1, '\nYou lost!')
         sys.stdout = sys.__stdout__
-        print(captured_output.getvalue())
+        print('Captured output\n', captured_output.getvalue())
 
     def test_letter_in_word(self):
         secret_word = 'decoy'
-        correct_guesses1, guessing_string1, message_str1, game_is_done1, wins_player1 = hangman.letter_in_word('y', 'deco',
+        correct_guesses1, guessing_string1, message_str1, game_is_done1, wins_player1 = hangman.letter_in_word('y',
+                                                                                                               'deco',
                                                                                                   ['d','e','c','o','_'],
                                                                                                   secret_word, 0)
         correct_guesses2, guessing_string2, message_str2, game_is_done2, wins_player2 = hangman.letter_in_word('o','dec',
                                                                                                 ['d','e','c','_','_'],
                                                                                                 secret_word, 0)
         self.assertTrue(game_is_done1)
-        self.assertEquals(message_str1, '\nCorrect!\nThe word is "' + secret_word + '"!\n')
-        self.assertEquals(correct_guesses1, 'decoy')
-        self.assertEquals(guessing_string1, ['d', 'e', 'c', 'o', 'y'])
-        self.assertEquals(wins_player1, 1)
+        self.assertEqual(message_str1, '\nCorrect!\nThe word is "' + secret_word + '"!\n')
+        self.assertEqual(correct_guesses1, 'decoy')
+        self.assertEqual(guessing_string1, ['d', 'e', 'c', 'o', 'y'])
+        self.assertEqual(wins_player1, 1)
 
         self.assertFalse(game_is_done2)
-        self.assertEquals(message_str2, '\nKeep going!')
-        self.assertEquals(correct_guesses2, 'deco')
-        self.assertEquals(guessing_string2, ['d', 'e', 'c', 'o', '_'])
-        self.assertEquals(wins_player2, 0)
+        self.assertEqual(message_str2, '\nKeep going!')
+        self.assertEqual(correct_guesses2, 'deco')
+        self.assertEqual(guessing_string2, ['d', 'e', 'c', 'o', '_'])
+        self.assertEqual(wins_player2, 0)
 
     def test_letter_not_in_word(self):
-        message_str1, game_is_done1, wins_computer1 = hangman.letter_not_in_word('word', 0, 5)
+        message_str1, game_is_done1, wins_computer1 = hangman.letter_not_in_word('word', 0, hangman.CONST_MAX_GUESSES)
         message_str2, game_is_done2, wins_computer2 = hangman.letter_not_in_word('word', 0, 0)
         self.assertTrue(game_is_done1)
-        self.assertEquals(message_str1, '\nYou lost!\nThe correct word is "' + 'word' + '"!\n')
-        self.assertEquals(wins_computer1, 1)
+        self.assertEqual(message_str1, '\nYou lost!\nThe correct word is "' + 'word' + '"!\n')
+        self.assertEqual(wins_computer1, 1)
         self.assertFalse(game_is_done2)
-        self.assertEquals(message_str2, '\nWrong guess!')
-        self.assertEquals(wins_computer2, 0)
+        self.assertEqual(message_str2, '\nWrong guess!')
+        self.assertEqual(wins_computer2, 0)
 
     def test_initiate_game(self):
         word, guessing_string, message_str = hangman.initiate_game(1)
-        self.assertEquals(word, 'abacus')
-        self.assertEquals(guessing_string, ['_','_','_','_','_','_'])
-        self.assertEquals(message_str, '\nGood luck! Starting the game')
+        self.assertEqual(word, 'abacus')
+        self.assertEqual(guessing_string, ['_', '_', '_', '_', '_', '_'])
+        self.assertEqual(message_str, '\nGood luck! Starting the game')
 
         word, guessing_string, message_str = hangman.initiate_game()
         self.assertIn(word, words.words)
-        self.assertEquals(guessing_string, ['_']*len(word))
-        self.assertEquals(message_str, '\nGood luck! Starting the game')
+        self.assertEqual(guessing_string, ['_']*len(word))
+        self.assertEqual(message_str, '\nGood luck! Starting the game')
 
+    def test_run_game(self):
+        with patch('builtins.input', return_value='quit'):
+            self.assertRaises(SystemExit, hangman.run_game)
 
 
 if __name__ == '__main__':
