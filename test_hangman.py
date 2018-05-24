@@ -22,6 +22,16 @@ class TestHangman(unittest.TestCase):
         finally:
             sys.stdout = out
 
+    @contextmanager
+    def captured_output(self):
+        new_out, new_err = StringIO(), StringIO()
+        old_out, old_err = sys.stdout, sys.stderr
+        try:
+            sys.stdout, sys.stderr = new_out, new_err
+            yield sys.stdout, sys.stderr
+        finally:
+            sys.stdout, sys.stderr = old_out, old_err
+
     def test_get_word(self):
         """Test function that chooses a word"""
         result1 = hangman.get_word()
@@ -30,8 +40,6 @@ class TestHangman(unittest.TestCase):
         self.assertIn(result2, words.words)
 
     def test_get_guess(self):
-        print('======== TESTING get_guess ==========')
-
         #TC1: ans = quit
         with patch('builtins.input', return_value='quit'):
             self.assertRaises(SystemExit, hangman.get_guess)
@@ -61,15 +69,13 @@ class TestHangman(unittest.TestCase):
 
         with patch('builtins.input', side_effect=user_input):
             with self.assertRaises(SystemExit):
-                with self.capture(hangman.get_guess(already_guessed)) as output:
-                    self.assertIn("You have already guessed that letter", output)
+                self.assertIn("You have already guessed that letter", self.capture(hangman.get_guess(already_guessed)))
 
         #TC7: ans = b, already_guessed = a
         with patch('builtins.input', return_value='a'):
             self.assertEqual(hangman.get_guess('b'), 'a')
 
     def test_play_again(self):
-        print('======== TESTING play_again ==========')
         #TC1: ans = 'quit'
         with patch('builtins.input', return_value='quit'):
             self.assertRaises(SystemExit, hangman.play_again)
@@ -99,10 +105,9 @@ class TestHangman(unittest.TestCase):
         self.assertIn('Tally', string)
 
     def test_letter_in_word(self):
-        print('======== TESTING letter_in_word ==========')
         secret_word = 'banana'
 
-        #TC1: guessing_string = ______, guess = a, correct_guesses = bn
+        #TC1: guessing_string =['b','_','n','_','n','_'], guess = a, correct_guesses = bn
         correct_guesses1, guessing_string1, message_str1, game_is_done1, wins_player1 = hangman.letter_in_word('a',
                                                                                                                'bn',
                                                                                                   ['b','_','n','_','n','_'],
@@ -114,7 +119,7 @@ class TestHangman(unittest.TestCase):
         self.assertEqual(guessing_string1, ['b', 'a', 'n', 'a', 'n', 'a'])
         self.assertEqual(wins_player1, 1)
 
-        #TC2: guessing_string = ______, guess = a, correct_guesses = n
+        #TC2: guessing_string =['_','_','n','_','n','_'] , guess = a, correct_guesses = n
         correct_guesses2, guessing_string2, message_str2, game_is_done2, wins_player2 = hangman.letter_in_word('a',
                                                                                                                'n',
                                                                                                                ['_',
@@ -147,7 +152,6 @@ class TestHangman(unittest.TestCase):
         self.assertEqual(wins_computer2, 0)
 
     def test_initiate_game(self):
-        print('======== TESTING initiate_game ==========')
         #TC1: word_ind = 1
         word, guessing_string, message_str = hangman.initiate_game(1)
         self.assertEqual(word, 'abacus')
@@ -161,7 +165,6 @@ class TestHangman(unittest.TestCase):
         self.assertEqual(message_str, '\nGood luck! Starting the game')
 
     def test_run_game(self):
-        print('======== TESTING run_game ==========')
         word_id = 245 #banana
 
         #TC1: b, a, c, n, n
@@ -169,9 +172,12 @@ class TestHangman(unittest.TestCase):
 
         with patch('builtins.input', side_effect=user_input1):
             with self.assertRaises(SystemExit):
-                with self.capture(hangman.run_game(word_id)) as output1:
-                    self.assertIn("Correct!", output1)
-                    self.assertIn("Wrong guess!", output1)
+                with self.captured_output() as (out, err):
+                    hangman.run_game(word_id)
+
+        output = out.getvalue().strip()
+        self.assertIn("Wrong guess!", output)
+        self.assertIn("Correct!", output)
 
 
         #TC2: b, a, n, quit
@@ -179,8 +185,7 @@ class TestHangman(unittest.TestCase):
 
         with patch('builtins.input', side_effect=user_input2):
             with self.assertRaises(SystemExit):
-                with self.capture(hangman.run_game(word_id)) as output2:
-                    self.assertIn("Correct!", output2)
+                self.assertIn("Correct!", self.capture(hangman.run_game(word_id)))
 
 
         #TC3: b, a, n, y, quit
@@ -188,9 +193,12 @@ class TestHangman(unittest.TestCase):
 
         with patch('builtins.input', side_effect=user_input3):
             with self.assertRaises(SystemExit):
-                with self.capture(hangman.run_game(word_id)) as output3:
-                    self.assertIn("Correct!", output3)
-                    self.assertIn("Tally. Player: 1", output3)
+                with self.captured_output() as (out, err):
+                    hangman.run_game(word_id)
+
+        output3 = out.getvalue().strip()
+        self.assertIn("Correct!", output3)
+        self.assertIn("Tally. Player: 1", output3)
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stderr)
