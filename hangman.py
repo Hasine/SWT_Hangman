@@ -33,7 +33,7 @@ def get_guess(already_guessed=None):
             print('\nPlease enter a single LETTER.')
         elif already_guessed is not None and ans in already_guessed:
             print('\nYou have already guessed that letter. Guess again.')
-        #elif ans not in 'abcdefghijklmnopqrstuvwxyz':
+        # elif ans not in 'abcdefghijklmnopqrstuvwxyz':
         #    print('\nPlease enter single a LETTER.')
         else:
             return ans
@@ -80,7 +80,7 @@ def display_status(player_guess, number_of_wrong_guesses, num_guesses_left, inco
     print("Wrongly guessed letters: ", list(incorrect_letters))
     print('Tally. Player: {}, Computer:{}'.format(player_wins, computer_wins))
     print(hangman_pics.pics2[len(incorrect_letters)])
-    print('Letters to guess: '+' '.join(player_guess))
+    print('Letters to guess: ' + ' '.join(player_guess))
     print(message_string)
 
 
@@ -119,7 +119,7 @@ def initiate_game(word_ind=None):
         secret_word = words.words[word_ind]
     else:
         secret_word = get_word()
-    #print(secret_word)  # disable this in the final product
+    # print(secret_word)  # disable this in the final product
     guessing_string = ['_'] * len(secret_word)
     message_str = '\nGood luck! Starting the game'
     return secret_word, guessing_string, message_str
